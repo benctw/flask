@@ -1,12 +1,14 @@
 from flask import Flask, url_for, request, render_template, request, redirect, make_response, session, g
 from markupsafe import escape
-import time
+import time, pymysql
 
 def valid_login(email, password):
-    if (email=='benctw@gmail.com' and password=='kk123'):
-        return True
-    else:
-        return False
+    sql = f'select * from `user` where `email`="{email}" and `password`="{password}"'
+    with g.conn.cursor() as cursor:
+        cursor.execute(sql)
+        data = cursor.fetchone()
+        return data
+    return False
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -14,7 +16,18 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 @app.before_request
 def before():
     g.user_email=''
-    
+    # 連接資料庫
+    g.conn = pymysql.connect(host='localhost', 
+                            port=3306, 
+                            user='root', 
+                            password='88888888', 
+                            database='testdb')
+
+@app.teardown_request
+def teardown(exception):
+    # 關閉連線資源
+    g.conn.close()
+
 @app.route('/')
 def index():
     return render_template('index.html')
