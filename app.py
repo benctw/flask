@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request, render_template, request, redirect, make_response, session
+from flask import Flask, url_for, request, render_template, request, redirect, make_response, session, g
 from markupsafe import escape
 import time
 
@@ -11,6 +11,10 @@ def valid_login(email, password):
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
+@app.before_request
+def before():
+    g.user_email=''
+    
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -29,6 +33,7 @@ def login():
         if valid_login(request.form['email'],
                        request.form['password']):
             session['user_email'] = request.form['email']
+            g.user_email = request.form['email']
             return redirect(url_for('hello', name=request.form['email']))
         else:
             error = '帳號/密碼錯誤'
@@ -42,6 +47,7 @@ def login():
 @app.route('/logout')
 def logout():
     session.pop('user_email', None)
+    g.user_email = ''
     return redirect(url_for('index'))
 
 @app.errorhandler(404)
