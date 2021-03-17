@@ -38,6 +38,11 @@ def login():
             return redirect(url_for('hello', name=session['user_email']))
         else:
             return render_template('login.html')
+            
+@app.route('/logout')
+def logout():
+    session.pop('user_email', None)
+    return redirect(url_for('index'))
 
 @app.errorhandler(404)
 def page_not_found(error):
