@@ -5,7 +5,7 @@ def do_the_login():
     return "do_the_login"
 
 def show_the_login_form():
-    return "show_the_login_form"
+    return render_template('login.html')
 
 app = Flask(__name__)
 
