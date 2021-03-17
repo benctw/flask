@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request, render_template, request, redirect, make_response
+from flask import Flask, url_for, request, render_template, request, redirect, make_response, session
 from markupsafe import escape
 import time
 
@@ -9,6 +9,7 @@ def valid_login(email, password):
         return False
 
 app = Flask(__name__)
+app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 
 @app.route('/')
 def index():
@@ -27,16 +28,14 @@ def login():
     if request.method == 'POST':
         if valid_login(request.form['email'],
                        request.form['password']):
-            resp = make_response(redirect(url_for('hello', name=request.form['email'])))
-            resp.set_cookie('user_email', request.form['email'], expires=time.time()+60*60*24*7)
-            return resp
+            session['user_email'] = request.form['email']
+            return redirect(url_for('hello', name=request.form['email']))
         else:
             error = '帳號/密碼錯誤'
             return error
     else:
-        user_email = request.cookies.get('user_email')
-        if user_email:
-            return redirect(url_for('hello', name=user_email))
+        if 'user_email' in session:
+            return redirect(url_for('hello', name=session['user_email']))
         else:
             return render_template('login.html')
 
