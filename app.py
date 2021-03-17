@@ -16,6 +16,8 @@ def index():
 @app.route('/hello/<string:name>')
 @app.route('/hello')
 def hello(name=None):
+    request_from_args = request.args.get('name','')
+    if request_from_args: name=request_from_args
     return render_template('hello.html', name=name)
 
 @app.route('/login', methods=['GET', 'POST'])
