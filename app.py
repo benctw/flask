@@ -40,5 +40,9 @@ def login():
         else:
             return render_template('login.html')
 
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template('page_not_found.html'), 404
+
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=5000, debug=True)
