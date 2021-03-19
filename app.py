@@ -1,9 +1,12 @@
-from flask import Flask, url_for, request, render_template, redirect
+from flask import Flask, url_for, request, render_template, redirect, make_response
 from markupsafe import escape
+import time
 
 def do_the_login(email, password):
     if email=='benctw@gmail.com' and password=='kk123':
-        return redirect(url_for('hello', useremail=email))
+        resp = make_response(redirect(url_for('hello', useremail=email)))
+        resp.set_cookie('useremail', email, expires = time.time()+60*60*24*7)
+        return resp
     else:
         return redirect(url_for('error', errorcode=6000))
 
@@ -18,11 +21,12 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        print(email)
-        print(password)
         return do_the_login(email, password)
     else:
-        return render_template('login.html')
+        if request.cookies.get('useremail'):
+            return redirect(url_for('hello', useremail=request.cookies.get('useremail')))
+        else:
+            return render_template('login.html')
 
 
 @app.route('/hello')
