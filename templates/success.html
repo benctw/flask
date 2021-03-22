@@ -6,16 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Success</title>
     <link rel="stylesheet" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" href="/static/css/dashboard.css">
 </head>
 <body>
     {% include 'navbar.html' %}
+    <div class="row">
+        {% include 'sidemenu.html' %}
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="container"><h1>
+                {% if successcode==3000 %}登入成功
+                {% elif successcode==3001 %}登出成功
+                {% endif %}
+        </h1>
+            </div>
+        </main>
+      </div>
     
-    <div class="container">
-        {% if successcode==3000 %}登入成功
-        {% elif successcode==3001 %}登出成功
-        {% endif %}
-
-    </div>
 
     <script src="/static/js/bootstrap.js"></script>
 </body>
