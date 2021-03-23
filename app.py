@@ -1,6 +1,6 @@
 from flask import Flask, url_for, request, render_template, request, redirect, make_response, session, g
 from markupsafe import escape
-import time, pymysql, sqlite3
+import time, pymssql
 
 def valid_login(email, password):
     sql = f'select * from `user` where `email`="{email}" and `password`="{password}"'
@@ -16,7 +16,10 @@ app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 def before():
     g.user_email=''
     # 連接資料庫
-    g.conn = sqlite3.connect('chatbot.db')
+    g.conn = pymssql.connect(server='ASUS410U\SQLEXPRESS', 
+                            user='chatbot_user', 
+                            password='88888888', 
+                            database='chatbot')
 
 @app.teardown_request
 def teardown(exception):
